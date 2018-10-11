@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://thelia.net/schema/dic/module"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://thelia.net/schema/dic/module http://thelia.net/schema/dic/module/module-2_2.xsd">
+    <fullnamespace>Paybox3x\Paybox3x</fullnamespace>
+    <descriptive locale="en_US">
+        <title>Pay 3x with credit card using Paybox</title>
+    </descriptive>
+    <descriptive locale="fr_FR">
+        <title>Paiement 3x en carte bancaire avec Paybox</title>
+    </descriptive>
+    <languages>
+        <language>en_US</language>
+        <language>fr_FR</language>
+    </languages>
+    <version>0.1.0</version>
+    <authors>
+        <author>
+            <name>Gilles Bourgeat</name>
+            <email>gbourgeat@openstudio.fr</email>
+        </author>
+    </authors>
+    <type>payment</type>
+    <required>
+        <module version="~1.1">Paybox</module>
+    </required>
+    <thelia>2.1.0</thelia>
+    <stability>alpha</stability>
+</module>

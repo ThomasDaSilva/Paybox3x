@@ -1,0 +1,13 @@
+{
+  "name": "thelia/paybox3x-module",
+  "license": "MIT",
+  "description": "Thelia 2 module for the Paybox payment system 3x",
+  "type": "thelia-module",
+  "require": {
+    "thelia/installer": "~1.1",
+    "thelia/paybox-module": "*"
+  },
+  "extra": {
+    "installer-name": "Paybox3x"
+  }
+}
