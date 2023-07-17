@@ -5,7 +5,7 @@ Ce module vous permet de proposer à vos clients le système de paiement Paybox 
 
 ### Installation
 
-> Ce module requiert Thelia 2.1 beta1 au minimum
+> Ce module requiert Thelia 2.5
 
 Pour installer le module Paybox3x, décompressez l'archive dans `<racine de thelia>/local/modules`. Veillez à ce que le dossier porte le nom `Paybox3x` (et pas `Paybox3x-master`, par exemple).
 

@@ -4,6 +4,7 @@ namespace Paybox3x\Listener;
 
 use Paybox\Paybox;
 use Paybox3x\Paybox3x;
+use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Thelia\Action\BaseAction;
@@ -16,32 +17,16 @@ use Thelia\Model\ConfigQuery;
 
 class SendConfirmationEmailListener extends BaseAction implements EventSubscriberInterface
 {
-    /**
-     * @var MailerFactory
-     */
-    protected $mailer;
-    /**
-     * @var ParserInterface
-     */
-    protected $parser;
-
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
     public function __construct(
-        ParserInterface $parser,
-        MailerFactory $mailer,
-        EventDispatcherInterface $eventDispatcher
-    ) {
-        $this->parser = $parser;
-        $this->mailer = $mailer;
-        $this->eventDispatcher = $eventDispatcher;
-    }
+        protected ParserInterface $parser,
+        protected MailerFactory $mailer,
+        protected EventDispatcherInterface $eventDispatcher
+    ) {}
 
     /**
-     * @return \Thelia\Mailer\MailerFactory
+     * @return MailerFactory
      */
-    public function getMailer()
+    public function getMailer(): MailerFactory
     {
         return $this->mailer;
     }
@@ -80,7 +65,7 @@ class SendConfirmationEmailListener extends BaseAction implements EventSubscribe
 
                 if (Paybox::getConfigValue('send_confirmation_email_on_successful_payment', false)) {
                     // Send now the order confirmation email to the customer
-                    $this->eventDispatcher->dispatch(TheliaEvents::ORDER_SEND_CONFIRMATION_EMAIL, $event);
+                    $this->eventDispatcher->dispatch($event, TheliaEvents::ORDER_SEND_CONFIRMATION_EMAIL);
                 }
             }
         } else {
@@ -94,6 +79,7 @@ class SendConfirmationEmailListener extends BaseAction implements EventSubscribe
      * Send the confirmation message only if the order is paid.
      *
      * @param OrderEvent $event
+     * @throws PropelException
      */
     public function checkSendOrderConfirmationMessageToCustomer(OrderEvent $event)
     {
@@ -108,7 +94,7 @@ class SendConfirmationEmailListener extends BaseAction implements EventSubscribe
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
             TheliaEvents::ORDER_UPDATE_STATUS => array("updateOrderStatus", 128),

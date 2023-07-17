@@ -14,6 +14,7 @@ namespace Paybox3x;
 
 use Propel\Runtime\Connection\ConnectionInterface;
 use Paybox\Paybox;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Model\Message;
 use Thelia\Model\MessageQuery;
 use Thelia\Model\ModuleImageQuery;
@@ -45,7 +46,7 @@ class Paybox3x extends Paybox
     /**
      * @inheritdoc
      */
-    public function postActivation(ConnectionInterface $con = null)
+    public function postActivation(ConnectionInterface $con = null): void
     {
         if (null === static::getConfigValue(self::CONFIG_KEY_INTERVAL, null)) {
             static::setConfigValue(self::CONFIG_KEY_INTERVAL, self::CONFIG_DEFAULT_VALUE_INTERVAL);
@@ -107,7 +108,7 @@ class Paybox3x extends Paybox
      *
      * @return bool true if the current order total is within the min and max limits
      */
-    protected function checkMinMaxAmount()
+    protected function checkMinMaxAmount(): bool
     {
         $minAmount = (float) static::getConfigValue(self::CONFIG_KEY_MINIMAL_AMOUNT, self::CONFIG_DEFAULT_VALUE_MINIMAL_AMOUNT);
 
@@ -117,17 +118,15 @@ class Paybox3x extends Paybox
         return $orderTotal > $minAmount;
     }
 
-    protected function doPayPayboxParameters(Order $order)
+    protected function doPayPayboxParameters(Order $order): array
     {
-        $params = array_merge(
+        return array_merge(
             parent::doPayPayboxParameters($order),
             static::generateMultiParameters($order->getTotalAmount())
         );
-
-        return $params;
     }
 
-    public static function generateMultiParameters($amount)
+    public static function generateMultiParameters($amount): array
     {
         $days = (int) static::getConfigValue(self::CONFIG_KEY_INTERVAL, self::CONFIG_DEFAULT_VALUE_INTERVAL);
 
@@ -144,5 +143,13 @@ class Paybox3x extends Paybox
             'PBX_DATE2' => (new \DateTime())->add(new \DateInterval('P' . ($days * 2) . 'D'))->format('d/m/Y'),
             'PBX_2MONT2' => $last,
         ];
+    }
+
+    public static function configureServices(ServicesConfigurator $servicesConfigurator): void
+    {
+        $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
+            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->autowire()
+            ->autoconfigure();
     }
 }
